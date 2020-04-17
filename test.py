@@ -67,7 +67,7 @@ def archive_pkg_copying():
             sys.exit()
 
     except Exception as e:
-        print('Below exception occured////////////////')
+        print('Below exception occured)
         print(e)
         print()
 
