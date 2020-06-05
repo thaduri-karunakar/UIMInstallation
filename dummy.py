@@ -1,6 +1,6 @@
 import sys
 import time
-import dataPopulationGlobalVariable as gfile
+import windowsDataPopulationGlobalVariable as gfile
 from pypsexec.client import Client
 
 def conenction():

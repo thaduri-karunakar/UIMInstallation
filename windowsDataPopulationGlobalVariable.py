@@ -1,0 +1,15 @@
+uimUsername = "administrator"
+uimPassword = "interOP@123"
+uimServer = '10.17.165.164'
+uimServerLoginName = 'administrator'
+uimServerLoginPassword = 'interOP@123'
+fileShareIP = '10.17.172.178'
+fileSharePassword = 'interOP@123'
+fileShareUserName = 'administrator'
+hostname = 'w19server1'
+domain = r'/W19SERVER1_domain/W19SERVER1_hub/W19SERVER1'
+uimPath = r'C:\PROGRA~1\Nimsoft'
+probe_deactivate = r"""{}\bin\pu -u {} -p {} {}/controller probe_deactivate automated_deployment_engine""".format(uimpath, uimUsername, uimPassword, domain)
+probe_activate = r"""{}\bin\pu -u {} -p {} {}/controller probe_activate automated_deployment_engine""".format(uimpath, uimUsername, uimPassword, domain)
+probe_deploy = r"""{}\bin\pu -u {} -p {} {}/automated_deployment_engine deploy_probe probename""".format(uimpath, uimUsername, uimPassword, domain)
+uimVersion = 201

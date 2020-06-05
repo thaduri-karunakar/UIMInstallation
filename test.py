@@ -1,6 +1,6 @@
 import sys
 import time
-import dataPopulationGlobalVariable as gfile
+import windowsDataPopulationGlobalVariable as gfile
 from pypsexec.client import Client
 
 start = time.time()
@@ -67,7 +67,7 @@ def archive_pkg_copying():
             sys.exit()
 
     except Exception as e:
-        print('Below exception occured)
+        print('Below exception occured')
         print(e)
         print()
 
