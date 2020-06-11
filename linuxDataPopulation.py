@@ -75,7 +75,7 @@ def probe_deplyment():
             stderr = ''.join(stderr); stderr = stderr.strip()
             if len(stderr) == 0:
                 print('{} probe deployed successfully...'.format(probe))
-                time.sleep(2)
+                time.sleep(5)
             else:
                 print('Failed to deploy {} probe :   {} '.format(probe, stderr))
 
