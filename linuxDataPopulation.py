@@ -121,7 +121,7 @@ def cfg_replacing():
         stderr = stderr.strip()
         if len(stderr) == 0:
             print('CDM cfg file replaced successfully \n', '*' * 43, sep='')
-            dirscancfg = r"\cp /mnt/fileshare/NimBUS-install/Probes/SystemTestingProbes/{}/Linux_CFG/system/dirscan.cfg /opt/nimsoft/probes/system/dirscan".format(
+            dirscancfg = r"\cp {}/{}/Linux_CFG/system/dirscan.cfg /opt/nimsoft/probes/system/dirscan".format(filesharepath,
                 gfile.uimversion)
             stdin, stdout, stderr = remote_connection().exec_command(dirscancfg)
             stdout = ''.join(stdout);
@@ -130,7 +130,7 @@ def cfg_replacing():
             stderr = stderr.strip()
             if len(stderr) == 0:
                 print('dirscan cfg file replaced successfully \n', '*' * 43, sep='')
-                logmoncfg = r"\cp /mnt/fileshare/NimBUS-install/Probes/SystemTestingProbes/{}/Linux_CFG/system/logmon.cfg /opt/nimsoft/probes/system/logmon".format(
+                logmoncfg = r"\cp {}/{}/Linux_CFG/system/logmon.cfg /opt/nimsoft/probes/system/logmon".format(filesharepath,
                     gfile.uimversion)
                 stdin, stdout, stderr = remote_connection().exec_command(logmoncfg)
                 stdout = ''.join(stdout);
@@ -139,7 +139,7 @@ def cfg_replacing():
                 stderr = stderr.strip()
                 if len(stderr) == 0:
                     print('logmon cfg file replaced successfully \n', '*' * 43, sep='')
-                    processescfg = r"\cp /mnt/fileshare/NimBUS-install/Probes/SystemTestingProbes/{}/Linux_CFG/system/processes.cfg /opt/nimsoft/probes/system/processes".format(
+                    processescfg = r"\cp {}/{}/Linux_CFG/system/processes.cfg /opt/nimsoft/probes/system/processes".format(filesharepath,
                         gfile.uimversion)
                     stdin, stdout, stderr = remote_connection().exec_command(processescfg)
                     stdout = ''.join(stdout);
@@ -148,7 +148,7 @@ def cfg_replacing():
                     stderr = stderr.strip()
                     if len(stderr) == 0:
                         print('processes cfg file replaced successfully \n', '*' * 43, sep='')
-                        net_connectcfg = r"\cp /mnt/fileshare/NimBUS-install/Probes/SystemTestingProbes/{}/Linux_CFG/network/net_connect.cfg /opt/nimsoft/probes/network/net_connect".format(
+                        net_connectcfg = r"\cp {}/{}/Linux_CFG/network/net_connect.cfg /opt/nimsoft/probes/network/net_connect".format(filesharepath,
                             gfile.uimversion)
                         stdin, stdout, stderr = remote_connection().exec_command(net_connectcfg)
                         stdout = ''.join(stdout);
