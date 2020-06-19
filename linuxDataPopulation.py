@@ -158,21 +158,20 @@ def cfg_replacing():
                         if len(stderr) == 0:
                             print('net_connect cfg file replaced successfully \n', '*' * 43, sep='')
                         else:
-                            print("Failed to replace net_connect cfg file :  {}\n{}\n", '*' * 43,
-                                  sep=''.format(stderr, net_connectcfg))
+                            print("Failed to replace net_connect cfg file :  {}\n{}\n".format(stderr, net_connectcfg), '*' * 43,
+                                  sep='')
 
                     else:
-                        print("Failed to replace processes cfg file  :  {}\n{}\n", '*' * 43,
-                              sep=''.format(stderr, processescfg))
+                        print("Failed to replace processes cfg file  :  {}\n{}\n".format(stderr, processescfg), '*' * 43, sep='')
 
                 else:
-                    print('Failed to replace logmon cfg file  : {}\n{}\n', '*' * 43, sep=''.format(stderr, dirscancfg))
+                    print('Failed to replace logmon cfg file  : {}\n{}\n'.format(stderr, dirscancfg), '*' * 43, sep='')
 
             else:
-                print('Failed to replace dirscan cfg file   :  {}\n{}\n', '*' * 43, sep=''.format(stderr, dirscancfg))
+                print('Failed to replace dirscan cfg file   :  {}\n{}\n'.format(stderr, dirscancfg), '*' * 43, sep='')
 
         else:
-            print('Failed to replace cdm cfg file :  {}\n {}\n', '*' * 43, sep=''.format(stderr, stdout))
+            print('Failed to replace cdm cfg file :  {}\n {}\n'.format(stderr, stdout), '*' * 43, sep='')
 
 
     except Exception as ex:
