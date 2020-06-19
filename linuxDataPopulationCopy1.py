@@ -6,7 +6,6 @@ import sys
 
 start = time.time()
 
-
 def remote_connection():
     try:
         ssh = paramiko.SSHClient()  # Creating Connection
@@ -22,28 +21,21 @@ def remote_connection():
 
 def archive_pkg_copying():
     """ copying packages from /mnt/fileshare location to UIM server Archive"""
-
+    print('copying packages from /mnt/fileshare location to UIM server Archive....\n', '*' * 43, sep='')
     try:
         # ssh = paramiko.SSHClient()  # Creating Connection
         # ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         # ssh.connect(gfile.uimserver, gfile.port, gfile.vm_username, gfile.vm_password)
-        print('service created for following {}\n'.format(gfile.uimserver), '*' * 43, sep='')
-        print('copying packages from /mnt/fileshare location to UIM server Archive\n', '*' * 68, sep='')
-        ''' Finding the fileshare path '''
-        filesharepath = """ find /mnt/fileshare/ -type d -name "SystemTestingProbes" """
-        stdin, stdout, stderr = remote_connection().exec_command(filesharepath)
-        time.sleep(5)
-        stdout = ''.join(stdout); filesharepath = stdout.strip()
-        print('Fileshare path is : \n {}\n'.format(filesharepath),'=' * 50, sep = '')
-        packages = '\cp {}/{}/*.zip /opt/nimsoft/archive'.format(filesharepath, gfile.uimversion)
-        print(packages)
+        print('service created for following "{}"....\n', '*' * 43, sep=''.format(gfile.uimserver))
+        packages = '\cp /mnt/fileshare/NimBUS-install/Probes/SystemTestingProbes/{}/*.zip /opt/nimsoft/archive'.format(
+            gfile.uimversion)
         stdin, stdout, stderr = remote_connection().exec_command(packages)
         time.sleep(5)
         stdout = ''.join(stdout); stdout = stdout.strip()
         stderr = ''.join(stderr); stderr = stderr.strip()
 
         if len(stderr) == 0:
-            print("copying packages from /mnt/fileshare location to UIM server Archive has successfully\n", '*' * 70, sep='')
+            print("copying packages from /mnt/fileshare location to UIM server Archive has successfully....\n", '*' * 43, sep='')
             probe_deactive_stdin, probe_deactive_stdout, probe_deactive_stderr = remote_connection().exec_command(
                 gfile.probe_deactivate)
             probe_deactive_stdout = ''.join(probe_deactive_stdout); probe_deactive_stdout = probe_deactive_stdout.strip()
@@ -61,11 +53,11 @@ def archive_pkg_copying():
                     time.sleep(5)
 
                 else:
-                    print("Failed to ade_activate command ....\n {}".format(probe_active_stderr), '*' * 43, sep='')
+                    print("Failed to ade_activate command ....\n {}", '*' * 43, sep=''.format(probe_active_stderr))
             else:
-                print("Failed to ade_deactivate command....\n {}".format(probe_deactive_stderr), '*' * 43, sep='')
+                print("Failed to ade_deactivate command....\n {}", '*' * 43, sep=''.format(probe_deactive_stderr))
         else:
-            print("Failed to copying packages from /mnt/fileshare location to UIM server Archive \n {} \n".format( stderr), '*' * 100, sep='')
+            print("Failed to copying packages from /mnt/fileshare location to UIM server Archive....\n {}", '*' * 43, sep=''.format( stderr))
 
     except Exception as ex:
         traceback.print_exc()
@@ -189,7 +181,8 @@ def probe_restart():
 def remote_connection_close():
     try:
         remote_connection().close()
-        print('Connection closed for following host {}'.format(gfile.uimserver), '*' * 52, sep ='')
+        print('Connection closed for following host "{}"....\n', '*' * 43, sep=''.format(gfile.uimserver))
+        print('*' * 52, '\n')
         print('Script has taken', (time.time() - start) / 60, 'Minuets..')
     except Exception as ex:
         traceback.print_exc()
