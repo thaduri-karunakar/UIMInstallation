@@ -30,11 +30,11 @@ def archive_pkg_copying():
         print('service created for following {}\n'.format(gfile.uimserver), '*' * 43, sep='')
         print('copying packages from /mnt/fileshare location to UIM server Archive\n', '*' * 68, sep='')
         ''' Finding the fileshare path '''
+        global filesharepath
         filesharepath = """ find /mnt/fileshare/ -type d -name "SystemTestingProbes" """
         stdin, stdout, stderr = remote_connection().exec_command(filesharepath)
         time.sleep(5)
         stdout = ''.join(stdout);
-        global filesharepath
         filesharepath = stdout.strip()
         print('Fileshare path is : \n {}\n'.format(filesharepath), '=' * 50, sep='')
         packages = '\cp {}/{}/*.zip /opt/nimsoft/archive'.format(filesharepath, gfile.uimversion)
