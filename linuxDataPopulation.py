@@ -106,7 +106,7 @@ def probe_deplyment():
             stderr = ''.join(stderr)
             stderr = stderr.strip()
             if len(stderr) == 0 or "_command failed: communication error" not in stdout:
-                print('{} probe deployed successfully \n'.format(probe), '*' * 43, sep='')
+                print('{} probe deployed successfully \n {}'.format(probe, stdout), '*' * 43, sep='')
                 time.sleep(5)
             else:
                 print('Failed to deploy {} probe :   {}\n'.format(probe, stderr), '*' * 43, sep='')
