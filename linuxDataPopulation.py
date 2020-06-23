@@ -106,7 +106,7 @@ def probe_deplyment():
             stderr = ''.join(stderr)
             stderr = stderr.strip()
             if len(stderr) == 0 or "_command failed: communication error" not in stdout:
-                print('{} probe deployed successfully \n {}'.format(probe, stdout), '*' * 43, sep='')
+                print('{} probe deployed successfully:  \n {} \n'.format(probe, stdout), '*' * 43, sep='')
                 time.sleep(5)
             else:
                 print('Failed to deploy {} probe :   {}\n'.format(probe, stderr), '*' * 43, sep='')
@@ -123,7 +123,7 @@ def cfg_replacing():
     """ copying/replacing  cfg files from LVFILESHARE.dhcp.broadcom.net to UIM server machine"""
 
     try:
-        print("waiting for 30 sec to finish probe deployment\n", '*' * 43, sep='')
+        print("waiting for 30 sec to finish probe deactivation\n", '*' * 43, sep='')
         time.sleep(30)
         print("copying/replacing  cfg files from /mnt/fileshare to UIM server machine \n", '*' * 43, sep='')
         cdmcfg = r"\cp {}/{}/Linux_CFG/system/cdm.cfg /opt/nimsoft/probes/system/cdm".format(filesharepath,
@@ -210,38 +210,24 @@ def cfg_replacing():
         traceback.print_exc()
 
 
-def probe_restart():
+def probe_restart(probe_status):
     """ Restarting probes on primary robot of uim server """
     try:
-        print("Restarting probes on primary robot of uim server\n", '*' * 43, sep='')
+       
+        print("{}ing on primary robot of uim server\n".format(probe_status), '*' * 43, sep='')
         for probe in ['cdm', 'dirscan', 'logmon', 'processes', 'net_connect']:
-            probe_deactivate = gfile.probe_deactivate
-            probe_deactivate = probe_deactivate.replace("automated_deployment_engine", probe)
-            stdin, stdout, stderr = remote_connection().exec_command(probe_deactivate)
+            probe_status_change = gfile.probe_status
+            probe_status_change = probe_status_change.replace("automated_deployment_engine", probe)
+            stdin, stdout, stderr = remote_connection().exec_command(probe_status_change)
             stdout = ''.join(stdout)
             stdout = stdout.strip()
             stderr = ''.join(stderr)
             stderr = stderr.strip()
             if len(stderr) == 0 or "_command failed: communication error" not in stdout:
-                print('{} probe deactivated successfully \n'.format(probe), '*' * 43, sep='')
+                print('{}ed successfully: {} \n'.format(probe_status, probe), '*' * 43, sep='')
                 time.sleep(5)
-                probe_activate = gfile.probe_activate
-                probe_activate = probe_activate.replace("automated_deployment_engine", probe)
-                stdin, stdout, stderr = remote_connection().exec_command(probe_activate)
-                stdout = ''.join(stdout)
-                stdout = stdout.strip()
-                stderr = ''.join(stderr)
-                stderr = stderr.strip()
-                if len(stderr) == 0:
-                    print('{} probe activated successfully \n'.format(probe), '*' * 43, sep='')
-                    time.sleep(2)
-                else:
-                    print('Failed to activate probe :  {}\n {}\n'.format(probe, stderr), '*' * 43, sep='')
-                    remote_connection_close()
-                    print("Exit from the program with above issue...")
-                    sys.exit()
             else:
-                print('Failed to deactivate probe :  {}\n {}\n'.format(probe, stderr), '*' * 43, sep='')
+                print('{} failed for probe :  {}\n {}\n'.format(probe_status, probe, stderr), '*' * 43, sep='')
                 remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit()
@@ -267,6 +253,7 @@ def remote_connection_close():
 remote_connection()
 archive_pkg_copying()
 probe_deplyment()
+probe_restart("probe_deactivate")
 cfg_replacing()
-probe_restart()
+probe_restart("probe_activate")
 remote_connection_close()
