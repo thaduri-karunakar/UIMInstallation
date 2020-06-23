@@ -13,11 +13,9 @@ def remote_connection():
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(gfile.uimserver, gfile.port, gfile.vm_username, gfile.vm_password)
         return ssh
-    except Exception as e:
+    except Exception:
         print('Below exception occured .....\n')
-        type, value, traceback = sys.exc_info()
-        print('Error opening %s: %s' % (value.filename, value.strerror))
-        print()
+        traceback.print_exc()
 
 
 def archive_pkg_copying():
@@ -73,20 +71,25 @@ def archive_pkg_copying():
 
                 else:
                     print("Failed to ade_activate command\n {}".format(probe_active_stderr), '*' * 43, sep='')
+                    remote_connection_close()
                     print("Exit from the program with above issue...")
                     sys.exit()
             else:
-                print("Failed to ade_deactivate command\n{}".format(probe_deactive_stderr),'*' * 43, sep='')
+                print("Failed to ade_deactivate command\n{}".format(probe_deactive_stderr), '*' * 43, sep='')
+                remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit()
         else:
             print(
                 "Failed to copying packages from /mnt/fileshare location to UIM server Archive \n {} \n".format(stderr),
                 '*' * 100, sep='')
+            remote_connection_close()
             print("Exit from the program with above issue...")
             sys.exit()
 
-    except Exception as ex:
+
+    except Exception:
+        print('Below exception occured .....\n')
         traceback.print_exc()
 
 
@@ -107,10 +110,12 @@ def probe_deplyment():
                 time.sleep(5)
             else:
                 print('Failed to deploy {} probe :   {}\n'.format(probe, stderr), '*' * 43, sep='')
+                remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit()
 
-    except Exception as e:
+    except Exception:
+        print('Below exception occured .....\n')
         traceback.print_exc()
 
 
@@ -171,32 +176,38 @@ def cfg_replacing():
                             print("Failed to replace net_connect cfg file :  {}\n{}\n".format(stderr, net_connectcfg),
                                   '*' * 43,
                                   sep='')
+                            remote_connection_close()
                             print("Exit from the program with above issue...")
                             sys.exit()
 
                     else:
                         print("Failed to replace processes cfg file  :  {}\n{}\n".format(stderr, processescfg),
                               '*' * 43, sep='')
+                        remote_connection_close()
                         print("Exit from the program with above issue...")
                         sys.exit()
                 else:
                     print('Failed to replace logmon cfg file  : {}\n{}\n'.format(stderr, dirscancfg), '*' * 43, sep='')
+                    remote_connection_close()
                     print("Exit from the program with above issue...")
                     sys.exit()
 
             else:
                 print('Failed to replace dirscan cfg file   :  {}\n{}\n'.format(stderr, dirscancfg), '*' * 43, sep='')
+                remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit()
 
         else:
             print('Failed to replace cdm cfg file :  {}\n {}\n'.format(stderr, stdout), '*' * 43, sep='')
+            remote_connection_close()
             print("Exit from the program with above issue...")
             sys.exit()
 
-    except Exception as ex:
+
+    except Exception:
+        print('Below exception occured .....\n')
         traceback.print_exc()
-        print()
 
 
 def probe_restart():
@@ -226,16 +237,19 @@ def probe_restart():
                     time.sleep(2)
                 else:
                     print('Failed to activate probe :  {}\n {}\n'.format(probe, stderr), '*' * 43, sep='')
+                    remote_connection_close()
                     print("Exit from the program with above issue...")
                     sys.exit()
             else:
                 print('Failed to deactivate probe :  {}\n {}\n'.format(probe, stderr), '*' * 43, sep='')
+                remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit()
 
 
-    except Exception as ex:
 
+    except Exception:
+        print('Below exception occured .....\n')
         traceback.print_exc()
 
 
@@ -244,7 +258,9 @@ def remote_connection_close():
         remote_connection().close()
         print('Connection closed for following host {} \n'.format(gfile.uimserver), '*' * 52, sep='')
         print('Script has taken', (time.time() - start) / 60, 'Minuets..')
-    except Exception as ex:
+
+    except Exception:
+        print('Below exception occured .....\n')
         traceback.print_exc()
 
 
