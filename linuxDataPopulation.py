@@ -105,9 +105,15 @@ def probe_deplyment():
             stdout = stdout.strip()
             stderr = ''.join(stderr)
             stderr = stderr.strip()
-            if len(stderr) == 0 or "_command failed: communication error" not in stdout:
-                print('{} probe deployed successfully:  \n {} \n'.format(probe, stdout), '*' * 43, sep='')
-                time.sleep(5)
+            if len(stderr) == 0:
+                if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
+                    print('{} probe deployed successfully:  \n {} \n'.format(probe, stdout), '*' * 43, sep='')
+                    time.sleep(5)
+                else:
+                    print('Failed to deploy {} probe :   {}\n'.format(probe, stderr), '*' * 43, sep='')
+                    remote_connection_close()
+                    print("Exit from the program with above issue...")
+                    sys.exit()
             else:
                 print('Failed to deploy {} probe :   {}\n'.format(probe, stderr), '*' * 43, sep='')
                 remote_connection_close()
@@ -135,6 +141,7 @@ def cfg_replacing():
         stderr = stderr.strip()
         if len(stderr) == 0:
             print('CDM cfg file replaced successfully \n', '*' * 43, sep='')
+            time.sleep(2)
             dirscancfg = r"\cp {}/{}/Linux_CFG/system/dirscan.cfg /opt/nimsoft/probes/system/dirscan".format(
                 filesharepath, gfile.uimversion)
             stdin, stdout, stderr = remote_connection().exec_command(dirscancfg)
@@ -144,6 +151,7 @@ def cfg_replacing():
             stderr = stderr.strip()
             if len(stderr) == 0:
                 print('dirscan cfg file replaced successfully \n', '*' * 43, sep='')
+                time.sleep(2)
                 logmoncfg = r"\cp {}/{}/Linux_CFG/system/logmon.cfg /opt/nimsoft/probes/system/logmon".format(
                     filesharepath,
                     gfile.uimversion)
@@ -154,6 +162,7 @@ def cfg_replacing():
                 stderr = stderr.strip()
                 if len(stderr) == 0:
                     print('logmon cfg file replaced successfully \n', '*' * 43, sep='')
+                    time.sleep(2)
                     processescfg = r"\cp {}/{}/Linux_CFG/system/processes.cfg /opt/nimsoft/probes/system/processes".format(
                         filesharepath, gfile.uimversion)
                     stdin, stdout, stderr = remote_connection().exec_command(processescfg)
@@ -163,6 +172,7 @@ def cfg_replacing():
                     stderr = stderr.strip()
                     if len(stderr) == 0:
                         print('processes cfg file replaced successfully \n', '*' * 43, sep='')
+                        time.sleep(2)
                         net_connectcfg = r"\cp {}/{}/Linux_CFG/network/net_connect.cfg /opt/nimsoft/probes/network/net_connect".format(
                             filesharepath, gfile.uimversion)
                         stdin, stdout, stderr = remote_connection().exec_command(net_connectcfg)
@@ -213,25 +223,34 @@ def cfg_replacing():
 def probe_restart(probe_status):
     """ Restarting probes on primary robot of uim server """
     try:
-       
-        print("{}ing on primary robot of uim server\n".format(probe_status), '*' * 43, sep='')
+
+        print("{} on primary robot of uim server\n".format(probe_status), '*' * 43, sep='')
         for probe in ['cdm', 'dirscan', 'logmon', 'processes', 'net_connect']:
             probe_status_change = gfile.probe_status
             probe_status_change = probe_status_change.replace("automated_deployment_engine", probe)
+            probe_status_change = probe_status_change.replace("probe_status", probe_status)
             stdin, stdout, stderr = remote_connection().exec_command(probe_status_change)
             stdout = ''.join(stdout)
             stdout = stdout.strip()
             stderr = ''.join(stderr)
             stderr = stderr.strip()
-            if len(stderr) == 0 or "_command failed: communication error" not in stdout:
-                print('{}ed successfully: {} \n'.format(probe_status, probe), '*' * 43, sep='')
-                time.sleep(5)
+
+            if len(stderr) == 0 :
+                if ("_command failed: communication error" in stdout) or ("command not found" in stdout):
+                    print('{} failed for probe :  {}\n{}\n'.format(probe_status, probe, stdout), '*' * 43, sep='')
+                    remote_connection_close()
+                    print("Exit from the program with above issue...")
+                    sys.exit()
+
+                else:
+                    print('{}d successfully: {} \n'.format(probe_status, probe), '*' * 43, sep='')
+                    print(stdout, '\n')
+                    time.sleep(5)
             else:
                 print('{} failed for probe :  {}\n {}\n'.format(probe_status, probe, stderr), '*' * 43, sep='')
                 remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit()
-
 
 
     except Exception:
