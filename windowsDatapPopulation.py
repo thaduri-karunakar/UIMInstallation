@@ -110,6 +110,8 @@ def probe_deplyment():
                 remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit()
+        print("waiting for 30 sec to finish probe deployment\n", '*' * 43, sep='')
+        time.sleep(30)
     except Exception as e:
         print('Below exception occured .....\n')
         traceback.print_exc()
@@ -121,7 +123,7 @@ def cfg_replacing():
         # c.create_service()
         print("waiting for 30 sec to finish probe deactivation\n", '*' * 43, sep='')
         time.sleep(30)
-        print(r"copying/replacing  cfg files from LVFILESHARE.dhcp.broadcom.net to UIM server machin")
+        print(r"copying/replacing  cfg files from LVFILESHARE.dhcp.broadcom.net to UIM server machin\n", '*' * 43, sep='')
         cdmcfg = r"echo All | copy \\{}\qa\NimBUS-install\Probes\SystemTestingProbes\{}\Windows_CFG\system\cdm.cfg {}\probes\system\cdm".format(gfile.fileShareIP, gfile.uimVersion, gfile.uimPath)
         stdout, stderr, rc = c.run_executable("cmd.exe", arguments='''/c  {}'''.format(netusecmd))
         stdout, stderr, rc = c.run_executable("cmd.exe", arguments='''/c  {}'''.format(cdmcfg))
@@ -159,6 +161,9 @@ def cfg_replacing():
                         stderr4 = str(stderr4, 'utf-8')
                         if rc4 == 0:
                             print('net_connect cfg file replaced successfully...')
+                            # sleeping 5 sec for cfg replacing
+                            time.sleep(5)
+
                         else:
                             print("Failed to replace net_connect cfg file :  {}\n{} ".format(stderr4, net_connectcfg))
                             remote_connection_close()
@@ -197,8 +202,6 @@ def cfg_replacing():
 def probe_restart(probe_status):
     """ Restarting probes on primary robot of uim server """
     try:
-        print("waiting for 30 sec to finish probe deployment\n", '*' * 43, sep='')
-        time.sleep(30)
         print("{} on primary robot of uim server\n".format(probe_status), '*' * 43, sep='')
         for probe in ['cdm', 'dirscan', 'logmon', 'processes', 'net_connect']:
             probe_status_change = gfile.probe_status
