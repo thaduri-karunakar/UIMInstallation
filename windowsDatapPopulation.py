@@ -100,7 +100,6 @@ def probe_deplyment():
             stdout, stderr, rc = c.run_executable("cmd.exe", arguments='''/c  {}'''.format(probe_deployment))
             stdout = str(stdout, 'utf-8')
             stderr = str(stderr, 'utf-8')
-            print(rc)
             if rc == 0:
                 if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
                     print('{} probe deployed successfully:  \n {} \n'.format(probe, stdout), '*' * 43, sep='')
@@ -123,7 +122,7 @@ def cfg_replacing():
         # c.create_service()
         print("waiting for 30 sec to finish probe deactivation\n", '*' * 43, sep='')
         time.sleep(30)
-        print(r"copying/replacing  cfg files from LVFILESHARE.dhcp.broadcom.net to UIM server machin\n", '*' * 43, sep='')
+        print(r"copying/replacing  cfg files from LVFILESHARE.dhcp.broadcom.net to UIM server machin\\n", '*' * 43, sep='')
         cdmcfg = r"echo All | copy \\{}\qa\NimBUS-install\Probes\SystemTestingProbes\{}\Windows_CFG\system\cdm.cfg {}\probes\system\cdm".format(gfile.fileShareIP, gfile.uimVersion, gfile.uimPath)
         stdout, stderr, rc = c.run_executable("cmd.exe", arguments='''/c  {}'''.format(netusecmd))
         stdout, stderr, rc = c.run_executable("cmd.exe", arguments='''/c  {}'''.format(cdmcfg))
