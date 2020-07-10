@@ -22,7 +22,7 @@ def remote_connection():
         print('Below exception occured .....\n')
         traceback.print_exc()
         print("Exit from the program with above issue...")
-        sys.exit()
+        sys.exit(1)
     else:
 
         print('service created for following "{}".......\n\n'.format(gfile.uimServer))
