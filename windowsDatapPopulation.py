@@ -12,20 +12,27 @@ netusecmd = r"net use \\{}\QA\NimBUS-install\Probes\SystemTestingProbes {} /user
 def remote_connection():
     try:
         global c
+        c = None
         c = Client(gfile.uimServer, gfile.uimServerLoginName, gfile.uimServerLoginPassword, encrypt='False')
         c.connect()
         c.create_service()
+
         # return c
     except Exception as e:
         print('Below exception occured .....\n')
         traceback.print_exc()
+        print("Exit from the program with above issue...")
+        sys.exit()
+    else:
+
+        print('service created for following "{}".......\n\n'.format(gfile.uimServer))
 
 
 def archive_pkg_copying():
     """ copying packages from LVFILESHARE.dhcp.broadcom.net to UIM server machine"""
     try:
         # remote_connection().create_service()
-        print('service created for following "{}".......\n\n'.format(gfile.uimServer))
+
         print("copying packages from LVFILESHARE.dhcp.broadcom.net to UIM server machine")
         stdout, stderr, rc = c.run_executable("cmd.exe", arguments='''/c  {}'''.format(netusecmd))
         stdout = str(stdout, 'utf-8')
@@ -230,10 +237,11 @@ def probe_restart(probe_status):
         traceback.print_exc()
 
 def remote_connection_close():
-    c.remove_service()
-    c.disconnect()
-    print('service removed for following "{}"'.format(gfile.uimServer))
-    print('Script has taken', (time.time() - start) / 60, 'Minuets..')
+    if c is not None:
+        c.remove_service()
+        c.disconnect()
+        print('service removed for following "{}"'.format(gfile.uimServer))
+        print('Script has taken', (time.time() - start) / 60, 'Minuets..')
 
 
 remote_connection()
