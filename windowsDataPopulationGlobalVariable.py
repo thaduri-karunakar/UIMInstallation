@@ -1,0 +1,24 @@
+import os
+uimUsername = os.getenv("uimUsername")
+uimPassword = os.getenv("uimPassword")
+uimServer = os.getenv("uimServer")
+uimServerLoginName = os.getenv("uimServerLoginName")
+uimServerLoginPassword = os.getenv("uimServerLoginPassword")
+fileShareIP = "10.17.172.178"
+fileShareUserName = "administrator"
+fileSharePassword = "interOP@123"
+hostName = os.getenv("hostName")
+domain = os.getenv("domain")
+uimPath = os.getenv("uimPath")
+uimapi_version = os.getenv("uimapi_version")
+ump_robot_path = os.getenv("ump_robot_path")
+probe_status = r"""{}\bin\pu -u {} -p {} {}/controller probe_status automated_deployment_engine""".format(uimPath, uimUsername, uimPassword, domain)
+probe_deactivate = r"""{}\bin\pu -u {} -p {} {}/controller probe_deactivate automated_deployment_engine""".format(uimPath, uimUsername, uimPassword, domain)
+probe_activate = r"""{}\bin\pu -u {} -p {} {}/controller probe_activate automated_deployment_engine""".format(uimPath, uimUsername, uimPassword, domain)
+probe_deploy = r"""{}\bin\pu -u {} -p {} {}/automated_deployment_engine deploy_probe probename""".format(uimPath, uimUsername, uimPassword, domain)
+ump_uimapi_deploy = r"""{}\bin\pu -u {} -p {} {}/automated_deployment_engine deploy_probe uimPath {} {}""".format(uimPath, uimUsername, uimPassword, domain, uimapi_version, ump_robot_path)
+uim_https_port = r"""{}\bin\pu -u {} -p {} {}/controller probe_config_set wasp setup https_port 8084""".format(uimPath, uimUsername, uimPassword, domain)
+uim_contact_origins_enabled = r"""{}\bin\pu -u {} -p {} {}/controller probe_config_set wasp setup contact_origins_enabled true""".format(uimPath, uimUsername, uimPassword, domain)
+ump_https_port = r"""{}\bin\pu -u {} -p {} {}/controller probe_config_set wasp setup https_port 8084""".format(uimPath, uimUsername, uimPassword, ump_robot_path)
+ump_contact_origins_enabled = r"""{}\bin\pu -u {} -p {} {}/controller probe_config_set wasp setup contact_origins_enabled true""".format(uimPath, uimUsername, uimPassword, ump_robot_path)
+uimVersion = os.getenv("uimVersion")
