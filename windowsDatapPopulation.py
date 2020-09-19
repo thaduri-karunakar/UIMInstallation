@@ -1,7 +1,7 @@
 import sys
 import time
 import traceback
-import windowsDataPopulationGlobalVariableCOpy as gfile
+import windowsDataPopulationGlobalVariable as gfile
 from pypsexec.client import Client
 
 start = time.time()
@@ -307,23 +307,20 @@ def sub_tenancy_config():
         ump_contact_origins_enabled = gfile.ump_contact_origins_enabled
         contact_orgin_enable = [uim_contact_origins_enabled, ump_contact_origins_enabled]
         for contact_orgin in contact_orgin_enable:
-            stdin, stdout, stderr = remote_connection().exec_command(contact_orgin)
-            stdout = ''.join(stdout)
-            stdout = stdout.strip()
-            stderr = ''.join(stderr)
-            stderr = stderr.strip()
-            if len(stderr) == 0:
+            stdout, stderr, rc = c.run_executable("cmd.exe", arguments='''/c  {}'''.format(contact_orgin))
+            stdout = str(stdout, 'utf-8')
+            stderr = str(stderr, 'utf-8')
+            if rc == 0:
                 if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
-                    print('{} config successfully:  \n {} \n'.format(contact_orgin, stdout), '*' * 43, sep='')
-                    time.sleep(5)
-
+                    print('{} config successfully::  \n {} \n'.format(contact_orgin, stdout), '*' * 43, sep='')
+                    time.sleep(2)
                 else:
                     print('Failed to config {} :   {}\n'.format(contact_orgin, stderr), '*' * 43, sep='')
                     remote_connection_close()
                     print("Exit from the program with above issue...")
                     sys.exit(1)
             else:
-                print('Failed to config {} :   {}\n'.format(contact_orgin, stderr), '*' * 43, sep='')
+                print('Failed to config {} :   {}\n {} '.format(contact_orgin, stdout, rc))
                 remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit(1)
