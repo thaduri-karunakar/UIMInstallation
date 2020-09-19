@@ -36,7 +36,7 @@ def archive_pkg_copying():
         filesharepath = stdout.strip()
         print('Fileshare path is : \n {}\n'.format(filesharepath), '=' * 50, sep='')
         packages = '\cp {}/{}/*.zip /opt/nimsoft/archive'.format(filesharepath, gfile.uimversion)
-        # print(packages)
+        print(packages)
         stdin, stdout, stderr = remote_connection().exec_command(packages)
         time.sleep(5)
         stdout = ''.join(stdout)
@@ -54,7 +54,7 @@ def archive_pkg_copying():
             probe_deactive_stderr = ''.join(probe_deactive_stderr)
             probe_deactive_stderr = probe_deactive_stderr.strip()
 
-            if "_command failed: communication error" not in probe_deactive_stdout:
+            if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
                 print("ade_deactivate command executed successfully \n", '*' * 43, sep='')
                 time.sleep(5)
                 probe_active_stdin, probe_active_stdout, probe_active_stderr = remote_connection().exec_command(
@@ -97,7 +97,7 @@ def probe_deplyment():
     """ Deploying probes from archive to UIM server primary robot"""
     try:
         print("Deploying probes on primary robot of uim server....\n", '*' * 43, sep='')
-        for probe in ('cdm', 'dirscan', 'logmon', 'processes', 'net_connect', 'hubmon', 'uimapi', 'umpuimapi'):
+        for probe in ('cdm', 'dirscan', 'logmon', 'processes', 'net_connect', 'hubmon','uimapi', 'umpuimapi'):
             probe_deploy = gfile.probe_deploy
             if probe == 'umpuimapi':
                 # deploying uimapi package on ump robot....
@@ -110,7 +110,7 @@ def probe_deplyment():
                 stderr = stderr.strip()
                 if len(stderr) == 0:
                     if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
-                        print('uimapi probe deployed successfully on ump robot:  \n {} \n'.format(stdout), '*' * 43, sep='')
+                        print('uimapi probe deployed successfully on ump robot:  \n{} \n'.format(stdout), '*' * 43, sep='')
                         time.sleep(5)
 
                     else:
@@ -133,7 +133,7 @@ def probe_deplyment():
                 stderr = stderr.strip()
                 if len(stderr) == 0:
                     if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
-                        print('{} probe deployed successfully:  \n {} \n'.format(probe, stdout), '*' * 43, sep='')
+                        print('{} probe deployed successfully:  \n{} \n'.format(probe, stdout), '*' * 43, sep='')
                         time.sleep(5)
                     else:
                         print('Failed to deploy {} probe :   {}\n'.format(probe, stderr), '*' * 43, sep='')
@@ -289,61 +289,67 @@ def https_config():
         time.sleep(10)
         print("Configuring Https_port....\n", '*' * 43, sep='')
         # Updating ump wasp cfg with https port ....
-        for https in ['uim_https_port', 'ump_https_port']:
-            https_port = gfile.https
-        stdin, stdout, stderr = remote_connection().exec_command(https_port)
-        stdout = ''.join(stdout)
-        stdout = stdout.strip()
-        stderr = ''.join(stderr)
-        stderr = stderr.strip()
-        if len(stderr) == 0:
-            if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
-                print('{} config successfully:  \n {} \n'.format(https_port, stdout), '*' * 43, sep='')
-                time.sleep(5)
+        uim_https_port = gfile.uim_https_port
+        ump_https_port = gfile.ump_https_port
+        https_port = [uim_https_port, ump_https_port]
+        for https in https_port:
+            # print(https)
+            stdin, stdout, stderr = remote_connection().exec_command(https)
+            stdout = ''.join(stdout)
+            stdout = stdout.strip()
+            stderr = ''.join(stderr)
+            stderr = stderr.strip()
+            if len(stderr) == 0:
+                if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
+                    print('{} config successfully:  \n {} \n'.format(https, stdout), '*' * 43, sep='')
+                    time.sleep(5)
 
+                else:
+                    print('Failed to config {} :   {}\n'.format(https, stderr), '*' * 43, sep='')
+                    remote_connection_close()
+                    print("Exit from the program with above issue...")
+                    sys.exit(1)
             else:
-                print('Failed to config {} :   {}\n'.format(https_port, stderr), '*' * 43, sep='')
+                print('Failed to config {} :   {}\n'.format(https, stderr), '*' * 43, sep='')
                 remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit(1)
-        else:
-            print('Failed to config {} :   {}\n'.format(https_port, stderr), '*' * 43, sep='')
-            remote_connection_close()
-            print("Exit from the program with above issue...")
-            sys.exit(1)
+
 
     except Exception:
         print('Below exception occured .....\n')
         traceback.print_exc()
 
 
-def sub_tenenancy_config():
+def sub_tenancy_config():
     try:
         time.sleep(10)
-        print("Configuring Https_port....\n", '*' * 43, sep='')
+        print("Configuring sub_tenancy....\n", '*' * 43, sep='')
         # Updating ump wasp cfg with https port ....
-        for contact_orgin in ['uim_contact_origins_enabled', 'ump_contact_origins_enabled']:
-            contact_orgin = gfile.contact_orgin
-        stdin, stdout, stderr = remote_connection().exec_command(contact_orgin)
-        stdout = ''.join(stdout)
-        stdout = stdout.strip()
-        stderr = ''.join(stderr)
-        stderr = stderr.strip()
-        if len(stderr) == 0:
-            if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
-                print('{} config successfully:  \n {} \n'.format(contact_orgin, stdout), '*' * 43, sep='')
-                time.sleep(5)
+        uim_contact_origins_enabled = gfile.uim_contact_origins_enabled
+        ump_contact_origins_enabled = gfile.ump_contact_origins_enabled
+        contact_orgin_enable = [uim_contact_origins_enabled, ump_contact_origins_enabled]
+        for contact_orgin in contact_orgin_enable:
+            stdin, stdout, stderr = remote_connection().exec_command(contact_orgin)
+            stdout = ''.join(stdout)
+            stdout = stdout.strip()
+            stderr = ''.join(stderr)
+            stderr = stderr.strip()
+            if len(stderr) == 0:
+                if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
+                    print('{} config successfully:  \n {} \n'.format(contact_orgin, stdout), '*' * 43, sep='')
+                    time.sleep(5)
 
+                else:
+                    print('Failed to config {} :   {}\n'.format(contact_orgin, stderr), '*' * 43, sep='')
+                    remote_connection_close()
+                    print("Exit from the program with above issue...")
+                    sys.exit(1)
             else:
                 print('Failed to config {} :   {}\n'.format(contact_orgin, stderr), '*' * 43, sep='')
                 remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit(1)
-        else:
-            print('Failed to config {} :   {}\n'.format(contact_orgin, stderr), '*' * 43, sep='')
-            remote_connection_close()
-            print("Exit from the program with above issue...")
-            sys.exit(1)
 
     except Exception:
         print('Below exception occured .....\n')
@@ -367,5 +373,5 @@ probe_restart("probe_deactivate")
 cfg_replacing()
 probe_restart("probe_activate")
 https_config()
-sub_tenenancy_config()
+sub_tenancy_config()
 remote_connection_close()

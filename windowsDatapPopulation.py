@@ -1,7 +1,7 @@
 import sys
 import time
 import traceback
-import windowsDataPopulationGlobalVariable as gfile
+import windowsDataPopulationGlobalVariableCOpy as gfile
 from pypsexec.client import Client
 
 start = time.time()
@@ -270,23 +270,25 @@ def https_config():
         time.sleep(10)
         print("Configuring Https_port....\n", '*' * 43, sep='')
         # Updating ump wasp cfg with https port ....
-        for https in ['uim_https_port', 'ump_https_port']:
-            https_port = gfile.https
-            print(https_port)
-            stdout, stderr, rc = c.run_executable("cmd.exe", arguments='''/c  {}'''.format(https_port))
+        uim_https_port = gfile.uim_https_port
+        ump_https_port = gfile.ump_https_port
+        https_port = [uim_https_port, ump_https_port]
+        for https in https_port:
+            # print(https_port)
+            stdout, stderr, rc = c.run_executable("cmd.exe", arguments='''/c  {}'''.format(https))
             stdout = str(stdout, 'utf-8')
             stderr = str(stderr, 'utf-8')
             if rc == 0:
                 if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
-                    print('{} config successfully::  \n {} \n'.format(stdout), '*' * 43, sep='')
+                    print('{} config successfully::  \n {} \n'.format(https,stdout), '*' * 43, sep='')
                     time.sleep(2)
                 else:
-                    print('Failed to config {} :   {}\n'.format(https_port, stderr), '*' * 43, sep='')
+                    print('Failed to config {} :   {}\n'.format(https, stderr), '*' * 43, sep='')
                     remote_connection_close()
                     print("Exit from the program with above issue...")
                     sys.exit(1)
             else:
-                print('Failed to config {} :   {}\n {} '.format(https_port, stdout, rc))
+                print('Failed to config {} :   {}\n {} '.format(https, stdout, rc))
                 remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit(1)
@@ -296,33 +298,35 @@ def https_config():
         traceback.print_exc()
 
 
-def sub_tenenancy_config():
+def sub_tenancy_config():
     try:
         time.sleep(10)
-        print("Configuring Https_port....\n", '*' * 43, sep='')
+        print("Configuring Sub_tenancy....\n", '*' * 43, sep='')
         # Updating ump wasp cfg with https port ....
-        for contact_orgin in ['uim_contact_origins_enabled', 'ump_contact_origins_enabled']:
-            contact_orgin = gfile.contact_orgin
-        stdin, stdout, stderr = remote_connection().exec_command(contact_orgin)
-        stdout = ''.join(stdout)
-        stdout = stdout.strip()
-        stderr = ''.join(stderr)
-        stderr = stderr.strip()
-        if len(stderr) == 0:
-            if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
-                print('{} config successfully:  \n {} \n'.format(contact_orgin, stdout), '*' * 43, sep='')
-                time.sleep(5)
+        uim_contact_origins_enabled = gfile.uim_contact_origins_enabled
+        ump_contact_origins_enabled = gfile.ump_contact_origins_enabled
+        contact_orgin_enable = [uim_contact_origins_enabled, ump_contact_origins_enabled]
+        for contact_orgin in contact_orgin_enable:
+            stdin, stdout, stderr = remote_connection().exec_command(contact_orgin)
+            stdout = ''.join(stdout)
+            stdout = stdout.strip()
+            stderr = ''.join(stderr)
+            stderr = stderr.strip()
+            if len(stderr) == 0:
+                if ("_command failed: communication error" not in stdout) or ("command not found" not in stdout):
+                    print('{} config successfully:  \n {} \n'.format(contact_orgin, stdout), '*' * 43, sep='')
+                    time.sleep(5)
 
+                else:
+                    print('Failed to config {} :   {}\n'.format(contact_orgin, stderr), '*' * 43, sep='')
+                    remote_connection_close()
+                    print("Exit from the program with above issue...")
+                    sys.exit(1)
             else:
                 print('Failed to config {} :   {}\n'.format(contact_orgin, stderr), '*' * 43, sep='')
                 remote_connection_close()
                 print("Exit from the program with above issue...")
                 sys.exit(1)
-        else:
-            print('Failed to config {} :   {}\n'.format(contact_orgin, stderr), '*' * 43, sep='')
-            remote_connection_close()
-            print("Exit from the program with above issue...")
-            sys.exit(1)
 
     except Exception:
         print('Below exception occured .....\n')
@@ -345,5 +349,5 @@ probe_restart('probe_deactivate')
 cfg_replacing()
 probe_restart('probe_activate')
 https_config()
-sub_tenenancy_config()
+sub_tenancy_config()
 remote_connection_close()
